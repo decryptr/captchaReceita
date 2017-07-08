@@ -1,8 +1,4 @@
 library(keras)
-library(tensorflow)
-library(purrr)
-library(abind)
-K <- backend()
 
 # data--------------------------------------------------------------------------
 
