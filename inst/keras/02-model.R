@@ -18,7 +18,6 @@ bd$test$x <- bd$test$x[-ind,,,,drop = FALSE]
 
 media <- mean(bd$train$x)
 desvio <- sd(bd$train$x)
-
 bd$train$x <- (bd$train$x[] - media )/desvio
 bd$test$x <- (bd$test$x[] - media )/desvio
 
@@ -28,10 +27,19 @@ model <- keras_model_sequential()
 model %>%
   layer_conv_2d(
     input_shape = c(50, 180, 1),
-    filters = 32,
+    filters = 16,
     kernel_size = c(5,5),
     padding = "same",
-    activation = "relu"
+    activation = "relu",
+    kernel_regularizer = regularizer_l2(l = 0.1)
+  ) %>%
+  layer_max_pooling_2d() %>%
+  layer_conv_2d(
+    filters =  32,
+    kernel_size = c(5,5),
+    padding = "same",
+    activation = "relu",
+    kernel_regularizer = regularizer_l2()
   ) %>%
   layer_max_pooling_2d() %>%
   layer_conv_2d(
@@ -41,20 +49,11 @@ model %>%
     activation = "relu"
   ) %>%
   layer_max_pooling_2d() %>%
-  layer_conv_2d(
-    filters =  128,
-    kernel_size = c(5,5),
-    padding = "same",
-    activation = "relu"
-  ) %>%
-  layer_max_pooling_2d() %>%
   layer_flatten() %>%
-  layer_dense(units = 1024) %>%
+  layer_dropout(0.4) %>%
   layer_dense(units = 210) %>%
   layer_reshape(target_shape = c(6, 35)) %>%
   layer_activation("softmax")
-
-
 
 
 # compile-----------------------------------------------------------------------
@@ -75,3 +74,6 @@ model %>%
     shuffle = TRUE,
     validation_data = list(bd$test$x, bd$test$y)
   )
+
+
+save_model_hdf5(model, "inst/keras/model_97.hdf5")

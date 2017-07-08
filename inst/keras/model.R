@@ -103,10 +103,10 @@ model %>%
   bidirectional(layer_lstm(units = 128, return_sequences = TRUE),
                 merge_mode = "concat") %>%
   layer_dense(128, activation = "relu") %>%
-  layer_dropout(0.1) %>%
+  layer_dropout(0.5) %>%
   layer_dense(64, activation = "relu") %>%
-  layer_dropout(0.1) %>%
-  layer_dense(35, activation = "relu") %>%
+  layer_dropout(0.5) %>%
+  layer_dense(36, activation = "relu") %>%
   layer_activation("softmax")
 
 
